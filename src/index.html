@@ -17,13 +17,18 @@
         <div class="container">
     
             <div class="stream">
+                <h2>CCTV_BRIDGE</h2>
+                <canvas id="canvas-cctv_bridge" width="640" height="360"></canvas>
+            </div>
+        
+            <div class="stream">
                 <h2>CCTV_ENGINE</h2>
                 <canvas id="canvas-cctv_engine" width="640" height="360"></canvas>
             </div>
         
             <div class="stream">
-                <h2>CCTV_PORT</h2>
-                <canvas id="canvas-cctv_port" width="640" height="360"></canvas>
+                <h2>CCTV_STERN</h2>
+                <canvas id="canvas-cctv_stern" width="640" height="360"></canvas>
             </div>
         
             <div class="stream">
@@ -37,13 +42,8 @@
             </div>
         
             <div class="stream">
-                <h2>CCTV_STERN</h2>
-                <canvas id="canvas-cctv_stern" width="640" height="360"></canvas>
-            </div>
-        
-            <div class="stream">
-                <h2>CCTV_BRIDGE</h2>
-                <canvas id="canvas-cctv_bridge" width="640" height="360"></canvas>
+                <h2>CCTV_PORT</h2>
+                <canvas id="canvas-cctv_port" width="640" height="360"></canvas>
             </div>
         
         </div>
@@ -90,12 +90,12 @@
             }
             
             // Setup all streams
-                setupStream('CCTV_ENGINE');
-            setupStream('CCTV_PORT');
+                setupStream('CCTV_BRIDGE');
+            setupStream('CCTV_ENGINE');
+            setupStream('CCTV_STERN');
             setupStream('CCTV_STARBOARD');
             setupStream('CCTV_FACEID');
-            setupStream('CCTV_STERN');
-            setupStream('CCTV_BRIDGE');
+            setupStream('CCTV_PORT');
 
         </script>
     </body>

@@ -15,6 +15,7 @@ type Clients = Arc<Mutex<HashMap<String, Vec<broadcast::Sender<Vec<u8>>>>>>;
 
 // Add this struct to hold pipeline resources
 struct PipelineResources {
+    #[allow(dead_code)]
     pipeline: gst::Pipeline,
     _main_loop: glib::MainLoop,
 }
@@ -48,8 +49,8 @@ async fn main() -> Result<()> {
     for (name, url) in rtsp_streams {
         println!("Setting up pipeline for {}: {}", name, url);
         
-        // Create broadcast channel for this stream
-        let (tx, _) = broadcast::channel(10);
+        // Create broadcast channel for this stream with larger buffer
+        let (tx, _) = broadcast::channel(100); // Increase buffer size
         {
             let mut clients_lock = clients.lock().unwrap();
             clients_lock.insert(name.clone(), vec![tx.clone()]);
@@ -208,12 +209,17 @@ async fn handle_ws_client(ws: WebSocket, clients: Clients, stream_name: String) 
     // Find the stream name case-insensitively and get its broadcast sender
     let mut rx = {
         let clients_lock = clients.lock().unwrap();
+        
+        // Print all available stream names for debugging
+        println!("Available streams: {:?}", clients_lock.keys().collect::<Vec<_>>());
+        
         // Find the stream name case-insensitively
         let found_key = clients_lock.keys()
             .find(|k| k.to_lowercase() == stream_name.to_lowercase())
             .cloned();
         
         if let Some(key) = found_key {
+            println!("Found matching stream: {}", key);
             if let Some(senders) = clients_lock.get(&key) {
                 if let Some(sender) = senders.first() {
                     println!("{}: Client successfully subscribed", key);
@@ -227,7 +233,9 @@ async fn handle_ws_client(ws: WebSocket, clients: Clients, stream_name: String) 
                 return;
             }
         } else {
-            println!("{}: Stream not found!", stream_name);
+            println!("{}: Stream not found! Available: {:?}", 
+                stream_name, 
+                clients_lock.keys().collect::<Vec<_>>());
             return;
         }
     };
@@ -245,6 +253,7 @@ async fn handle_ws_client(ws: WebSocket, clients: Clients, stream_name: String) 
     // Send frames to client
     let outgoing = tokio::spawn(async move {
         while let Ok(jpeg_data) = rx.recv().await {
+            println!("Sending frame of size {} to client", jpeg_data.len());
             if let Err(_) = ws_tx.send(Message::binary(jpeg_data)).await {
                 break; // Client disconnected
             }
@@ -253,8 +262,8 @@ async fn handle_ws_client(ws: WebSocket, clients: Clients, stream_name: String) 
     
     // Wait for either task to complete (client disconnect)
     tokio::select! {
-        _ = incoming => {},
-        _ = outgoing => {},
+        _ = incoming => println!("Incoming task completed"),
+        _ = outgoing => println!("Outgoing task completed"),
     }
     
     println!("Client disconnected from {}", stream_name);
