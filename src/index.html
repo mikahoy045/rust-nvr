@@ -1,0 +1,103 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>RTSP Streams</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
+            .container { display: flex; flex-wrap: wrap; gap: 20px; }
+            .stream { background: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            h1 { color: #333; }
+            h2 { color: #555; margin-top: 0; }
+            canvas { border: 1px solid #ddd; background: #000; display: block; }
+        </style>
+    </head>
+    <body>
+        <h1>RTSP Streams</h1>
+        <div class="container">
+    
+            <div class="stream">
+                <h2>CCTV_ENGINE</h2>
+                <canvas id="canvas-cctv_engine" width="640" height="360"></canvas>
+            </div>
+        
+            <div class="stream">
+                <h2>CCTV_PORT</h2>
+                <canvas id="canvas-cctv_port" width="640" height="360"></canvas>
+            </div>
+        
+            <div class="stream">
+                <h2>CCTV_STARBOARD</h2>
+                <canvas id="canvas-cctv_starboard" width="640" height="360"></canvas>
+            </div>
+        
+            <div class="stream">
+                <h2>CCTV_FACEID</h2>
+                <canvas id="canvas-cctv_faceid" width="640" height="360"></canvas>
+            </div>
+        
+            <div class="stream">
+                <h2>CCTV_STERN</h2>
+                <canvas id="canvas-cctv_stern" width="640" height="360"></canvas>
+            </div>
+        
+            <div class="stream">
+                <h2>CCTV_BRIDGE</h2>
+                <canvas id="canvas-cctv_bridge" width="640" height="360"></canvas>
+            </div>
+        
+        </div>
+
+        <script>
+            function setupStream(streamName) {
+                const canvas = document.getElementById('canvas-' + streamName.toLowerCase());
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Connect to WebSocket
+                const ws = new WebSocket('ws://' + window.location.host + '/ws/' + streamName.toLowerCase());
+                
+                ws.binaryType = 'arraybuffer';
+                
+                ws.onopen = function() {
+                    console.log('Connected to ' + streamName);
+                };
+                
+                ws.onmessage = function(event) {
+                    const blob = new Blob([event.data], {type: 'image/jpeg'});
+                    const url = URL.createObjectURL(blob);
+                    const img = new Image();
+                    
+                    img.onload = function() {
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        URL.revokeObjectURL(url);
+                    };
+                    
+                    img.src = url;
+                };
+                
+                ws.onclose = function() {
+                    console.log('Disconnected from ' + streamName);
+                    // Try to reconnect after a delay
+                    setTimeout(() => setupStream(streamName), 5000);
+                };
+                
+                ws.onerror = function(err) {
+                    console.error('Error:', err);
+                    ws.close();
+                };
+            }
+            
+            // Setup all streams
+                setupStream('CCTV_ENGINE');
+            setupStream('CCTV_PORT');
+            setupStream('CCTV_STARBOARD');
+            setupStream('CCTV_FACEID');
+            setupStream('CCTV_STERN');
+            setupStream('CCTV_BRIDGE');
+
+        </script>
+    </body>
+    </html>
+    
