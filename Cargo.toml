@@ -1,0 +1,14 @@
+[package]
+name = "rtspstream"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+gstreamer = { git = "https://gitlab.freedesktop.org/gstreamer/gstreamer-rs.git", branch = "main" }
+gstreamer-rtsp = { git = "https://gitlab.freedesktop.org/gstreamer/gstreamer-rs.git", branch = "main" }
+gstreamer-app = { git = "https://gitlab.freedesktop.org/gstreamer/gstreamer-rs.git", branch = "main" }
+gstreamer-video = { git = "https://gitlab.freedesktop.org/gstreamer/gstreamer-rs.git", branch = "main" }
+anyhow = "1.0"
+ctrlc = "3.4.1"
+glib = "0.19.7"
+dotenv = "0.15.0"
