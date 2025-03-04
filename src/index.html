@@ -2,58 +2,335 @@
     <!DOCTYPE html>
     <html>
     <head>
-        <title>RTSP Streams</title>
+        <title>CCTV Surveillance System</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
-            .container { display: flex; flex-wrap: wrap; gap: 20px; }
-            .stream { background: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-            h1 { color: #333; }
-            h2 { color: #555; margin-top: 0; }
-            canvas { border: 1px solid #ddd; background: #000; display: block; }
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #1e1e1e;
+                color: #e0e0e0;
+                overflow: hidden;
+            }
+            .header {
+                background-color: #333;
+                color: white;
+                padding: 10px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #444;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 500;
+            }
+            .datetime {
+                font-size: 14px;
+                text-align: right;
+            }
+            .container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                padding: 8px;
+                height: calc(100vh - 60px);
+            }
+            .stream {
+                background: #2a2a2a;
+                border-radius: 4px;
+                overflow: hidden;
+                position: relative;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            }
+            .stream-header {
+                background: rgba(0,0,0,0.7);
+                color: white;
+                padding: 5px 10px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 10;
+                display: flex;
+                justify-content: space-between;
+                font-size: 12px;
+            }
+            .stream-name {
+                font-weight: bold;
+            }
+            .status {
+                display: flex;
+                align-items: center;
+            }
+            .status-dot {
+                height: 8px;
+                width: 8px;
+                border-radius: 50%;
+                background-color: #4CAF50;
+                margin-right: 5px;
+            }
+            .status-text {
+                font-size: 11px;
+            }
+            canvas {
+                width: 100%;
+                height: 100%;
+                background: #000;
+                display: block;
+                object-fit: cover;
+            }
+            .stream-footer {
+                background: rgba(0,0,0,0.7);
+                color: white;
+                padding: 5px 10px;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 10;
+                display: flex;
+                justify-content: space-between;
+                font-size: 11px;
+            }
+            .controls {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: flex;
+                gap: 10px;
+                opacity: 0;
+                transition: opacity 0.3s;
+                z-index: 5;
+            }
+            .stream:hover .controls {
+                opacity: 1;
+            }
+            .control-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: rgba(0,0,0,0.7);
+                border: 1px solid rgba(255,255,255,0.3);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+            .control-btn:hover {
+                background: rgba(0,0,0,0.9);
+            }
+            .toolbar {
+                background: #333;
+                padding: 5px 10px;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                border-top: 1px solid #444;
+            }
+            .toolbar-btn {
+                background: transparent;
+                border: none;
+                color: #ddd;
+                cursor: pointer;
+                padding: 5px 10px;
+                font-size: 13px;
+            }
+            .toolbar-btn:hover {
+                color: white;
+                background: #444;
+                border-radius: 3px;
+            }
+            .stats {
+                position: absolute;
+                bottom: 25px;
+                right: 10px;
+                background: rgba(0,0,0,0.5);
+                color: #aaa;
+                font-size: 10px;
+                padding: 2px 5px;
+                border-radius: 3px;
+                z-index: 15;
+            }
         </style>
     </head>
     <body>
-        <h1>RTSP Streams</h1>
+        <div class="header">
+            <h1>CCTV Surveillance System</h1>
+            <div class="datetime" id="datetime">Loading...</div>
+        </div>
         <div class="container">
     
             <div class="stream">
-                <h2>CCTV_BRIDGE</h2>
-                <canvas id="canvas-cctv_bridge" width="640" height="360"></canvas>
-            </div>
-        
-            <div class="stream">
-                <h2>CCTV_ENGINE</h2>
+                <div class="stream-header">
+                    <div class="stream-name">CCTV_ENGINE</div>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        <div class="status-text">LIVE</div>
+                    </div>
+                </div>
                 <canvas id="canvas-cctv_engine" width="640" height="360"></canvas>
+                <div class="stream-footer">
+                    <div class="fps" id="fps-cctv_engine">0 FPS</div>
+                    <div class="location">CCTV_ENGINE</div>
+                </div>
+                <div class="controls">
+                    <div class="control-btn">⟲</div>
+                    <div class="control-btn">⏸</div>
+                    <div class="control-btn">⚙</div>
+                </div>
+                <div class="stats" id="stats-cctv_engine"></div>
             </div>
         
             <div class="stream">
-                <h2>CCTV_STERN</h2>
-                <canvas id="canvas-cctv_stern" width="640" height="360"></canvas>
+                <div class="stream-header">
+                    <div class="stream-name">CCTV_BRIDGE</div>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        <div class="status-text">LIVE</div>
+                    </div>
+                </div>
+                <canvas id="canvas-cctv_bridge" width="640" height="360"></canvas>
+                <div class="stream-footer">
+                    <div class="fps" id="fps-cctv_bridge">0 FPS</div>
+                    <div class="location">CCTV_BRIDGE</div>
+                </div>
+                <div class="controls">
+                    <div class="control-btn">⟲</div>
+                    <div class="control-btn">⏸</div>
+                    <div class="control-btn">⚙</div>
+                </div>
+                <div class="stats" id="stats-cctv_bridge"></div>
             </div>
         
             <div class="stream">
-                <h2>CCTV_STARBOARD</h2>
+                <div class="stream-header">
+                    <div class="stream-name">CCTV_STARBOARD</div>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        <div class="status-text">LIVE</div>
+                    </div>
+                </div>
                 <canvas id="canvas-cctv_starboard" width="640" height="360"></canvas>
+                <div class="stream-footer">
+                    <div class="fps" id="fps-cctv_starboard">0 FPS</div>
+                    <div class="location">CCTV_STARBOARD</div>
+                </div>
+                <div class="controls">
+                    <div class="control-btn">⟲</div>
+                    <div class="control-btn">⏸</div>
+                    <div class="control-btn">⚙</div>
+                </div>
+                <div class="stats" id="stats-cctv_starboard"></div>
             </div>
         
             <div class="stream">
-                <h2>CCTV_FACEID</h2>
-                <canvas id="canvas-cctv_faceid" width="640" height="360"></canvas>
+                <div class="stream-header">
+                    <div class="stream-name">CCTV_STERN</div>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        <div class="status-text">LIVE</div>
+                    </div>
+                </div>
+                <canvas id="canvas-cctv_stern" width="640" height="360"></canvas>
+                <div class="stream-footer">
+                    <div class="fps" id="fps-cctv_stern">0 FPS</div>
+                    <div class="location">CCTV_STERN</div>
+                </div>
+                <div class="controls">
+                    <div class="control-btn">⟲</div>
+                    <div class="control-btn">⏸</div>
+                    <div class="control-btn">⚙</div>
+                </div>
+                <div class="stats" id="stats-cctv_stern"></div>
             </div>
         
             <div class="stream">
-                <h2>CCTV_PORT</h2>
+                <div class="stream-header">
+                    <div class="stream-name">CCTV_PORT</div>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        <div class="status-text">LIVE</div>
+                    </div>
+                </div>
                 <canvas id="canvas-cctv_port" width="640" height="360"></canvas>
+                <div class="stream-footer">
+                    <div class="fps" id="fps-cctv_port">0 FPS</div>
+                    <div class="location">CCTV_PORT</div>
+                </div>
+                <div class="controls">
+                    <div class="control-btn">⟲</div>
+                    <div class="control-btn">⏸</div>
+                    <div class="control-btn">⚙</div>
+                </div>
+                <div class="stats" id="stats-cctv_port"></div>
+            </div>
+        
+            <div class="stream">
+                <div class="stream-header">
+                    <div class="stream-name">CCTV_FACEID</div>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        <div class="status-text">LIVE</div>
+                    </div>
+                </div>
+                <canvas id="canvas-cctv_faceid" width="640" height="360"></canvas>
+                <div class="stream-footer">
+                    <div class="fps" id="fps-cctv_faceid">0 FPS</div>
+                    <div class="location">CCTV_FACEID</div>
+                </div>
+                <div class="controls">
+                    <div class="control-btn">⟲</div>
+                    <div class="control-btn">⏸</div>
+                    <div class="control-btn">⚙</div>
+                </div>
+                <div class="stats" id="stats-cctv_faceid"></div>
             </div>
         
         </div>
+        <div class="toolbar">
+            <button class="toolbar-btn">⏺ Record</button>
+            <button class="toolbar-btn">📷 Snapshot</button>
+            <button class="toolbar-btn">⚙ Settings</button>
+            <button class="toolbar-btn">⤢ Full Screen</button>
+            <button class="toolbar-btn">🔍 Search</button>
+        </div>
 
         <script>
+            // Update date and time
+            function updateDateTime() {
+                const now = new Date();
+                const dateString = now.toLocaleDateString();
+                const timeString = now.toLocaleTimeString();
+                document.getElementById('datetime').textContent = `${dateString} ${timeString}`;
+            }
+            
+            setInterval(updateDateTime, 1000);
+            updateDateTime();
+            
             function setupStream(streamName) {
                 const canvas = document.getElementById('canvas-' + streamName.toLowerCase());
                 const ctx = canvas.getContext('2d');
+                const stats = document.getElementById('stats-' + streamName.toLowerCase());
+                const fpsElement = document.getElementById('fps-' + streamName.toLowerCase());
+                const statusDot = canvas.parentElement.querySelector('.status-dot');
+                
                 ctx.fillStyle = 'black';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw text on canvas
+                ctx.fillStyle = 'white';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Connecting to ' + streamName + '...', canvas.width/2, canvas.height/2);
+                
+                let frameCount = 0;
+                let lastTime = Date.now();
+                let fps = 0;
                 
                 // Connect to WebSocket
                 const ws = new WebSocket('ws://' + window.location.host + '/ws/' + streamName.toLowerCase());
@@ -62,9 +339,24 @@
                 
                 ws.onopen = function() {
                     console.log('Connected to ' + streamName);
+                    stats.textContent = 'Connected';
+                    statusDot.style.backgroundColor = '#4CAF50'; // Green
                 };
                 
                 ws.onmessage = function(event) {
+                    // Calculate FPS
+                    frameCount++;
+                    const now = Date.now();
+                    if (now - lastTime >= 1000) {
+                        fps = frameCount;
+                        frameCount = 0;
+                        lastTime = now;
+                        fpsElement.textContent = fps + ' FPS';
+                    }
+                    
+                    // Update stats
+                    stats.textContent = `${(event.data.byteLength / 1024).toFixed(1)} KB`;
+                    
                     const blob = new Blob([event.data], {type: 'image/jpeg'});
                     const url = URL.createObjectURL(blob);
                     const img = new Image();
@@ -74,29 +366,65 @@
                         URL.revokeObjectURL(url);
                     };
                     
+                    img.onerror = function(err) {
+                        console.error(`Error loading image for ${streamName}:`, err);
+                        statusDot.style.backgroundColor = 'red';
+                    };
+                    
                     img.src = url;
                 };
                 
                 ws.onclose = function() {
                     console.log('Disconnected from ' + streamName);
+                    statusDot.style.backgroundColor = '#FF9800'; // Orange
+                    
+                    // Draw text on canvas
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'red';
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Connection lost. Reconnecting...', canvas.width/2, canvas.height/2);
+                    
                     // Try to reconnect after a delay
                     setTimeout(() => setupStream(streamName), 5000);
                 };
                 
                 ws.onerror = function(err) {
-                    console.error('Error:', err);
-                    ws.close();
+                    console.error('WebSocket Error for ' + streamName + ':', err);
+                    statusDot.style.backgroundColor = 'red';
                 };
+                
+                // Fullscreen toggle
+                canvas.addEventListener('dblclick', function() {
+                    if (!document.fullscreenElement) {
+                        canvas.parentElement.requestFullscreen().catch(err => {
+                            console.error(`Could not enter fullscreen: ${err.message}`);
+                        });
+                    } else {
+                        document.exitFullscreen();
+                    }
+                });
             }
             
             // Setup all streams
-                setupStream('CCTV_BRIDGE');
-            setupStream('CCTV_ENGINE');
-            setupStream('CCTV_STERN');
+                setupStream('CCTV_ENGINE');
+            setupStream('CCTV_BRIDGE');
             setupStream('CCTV_STARBOARD');
-            setupStream('CCTV_FACEID');
+            setupStream('CCTV_STERN');
             setupStream('CCTV_PORT');
+            setupStream('CCTV_FACEID');
 
+            // Toolbar buttons
+            document.querySelector('.toolbar-btn:nth-child(4)').addEventListener('click', function() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.error(`Could not enter fullscreen: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
         </script>
     </body>
     </html>
