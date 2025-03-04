@@ -414,6 +414,9 @@ fn create_html_file(stream_names: &[String]) -> Result<()> {
                 cursor: pointer;
                 padding: 5px 10px;
                 font-size: 13px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
             }
             .toolbar-btn:hover {
                 color: white;
@@ -430,6 +433,15 @@ fn create_html_file(stream_names: &[String]) -> Result<()> {
                 padding: 2px 5px;
                 border-radius: 3px;
                 z-index: 15;
+            }
+            svg {
+                width: 16px;
+                height: 16px;
+                fill: currentColor;
+            }
+            .control-btn svg {
+                width: 20px;
+                height: 20px;
             }
         </style>
     </head>
@@ -457,9 +469,21 @@ fn create_html_file(stream_names: &[String]) -> Result<()> {
                     <div class="location">{}</div>
                 </div>
                 <div class="controls">
-                    <div class="control-btn">⟲</div>
-                    <div class="control-btn">⏸</div>
-                    <div class="control-btn">⚙</div>
+                    <div class="control-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" />
+                        </svg>
+                    </div>
+                    <div class="control-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M14,19H18V5H14M6,19H10V5H6V19Z" />
+                        </svg>
+                    </div>
+                    <div class="control-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                        </svg>
+                    </div>
                 </div>
                 <div class="stats" id="stats-{}"></div>
             </div>
@@ -469,11 +493,36 @@ fn create_html_file(stream_names: &[String]) -> Result<()> {
     html.push_str(r#"
         </div>
         <div class="toolbar">
-            <button class="toolbar-btn">⏺ Record</button>
-            <button class="toolbar-btn">📷 Snapshot</button>
-            <button class="toolbar-btn">⚙ Settings</button>
-            <button class="toolbar-btn">⤢ Full Screen</button>
-            <button class="toolbar-btn">🔍 Search</button>
+            <button class="toolbar-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,12.5A1.5,1.5 0 0,1 10.5,11A1.5,1.5 0 0,1 12,9.5A1.5,1.5 0 0,1 13.5,11A1.5,1.5 0 0,1 12,12.5M12,7.2C9.9,7.2 8.2,8.9 8.2,11C8.2,14 12,17.5 12,17.5C12,17.5 15.8,14 15.8,11C15.8,8.9 14.1,7.2 12,7.2Z" />
+                </svg>
+                Record
+            </button>
+            <button class="toolbar-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
+                </svg>
+                Snapshot
+            </button>
+            <button class="toolbar-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                </svg>
+                Settings
+            </button>
+            <button class="toolbar-btn" id="fullscreen-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M5,5H10V7H7V10H5V5M14,5H19V10H17V7H14V5M17,14H19V19H14V17H17V14M10,17V19H5V14H7V17H10Z" />
+                </svg>
+                Full Screen
+            </button>
+            <button class="toolbar-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+                </svg>
+                Search
+            </button>
         </div>
 
         <script>
@@ -592,7 +641,7 @@ fn create_html_file(stream_names: &[String]) -> Result<()> {
     
     html.push_str(r#"
             // Toolbar buttons
-            document.querySelector('.toolbar-btn:nth-child(4)').addEventListener('click', function() {
+            document.getElementById('fullscreen-btn').addEventListener('click', function() {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen().catch(err => {
                         console.error(`Could not enter fullscreen: ${err.message}`);
