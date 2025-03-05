@@ -6,7 +6,7 @@ use gst::prelude::*;
 use std::sync::{Arc, Mutex};
 use tokio::sync::broadcast;
 use lazy_static::lazy_static;
-use gst::glib::ControlFlow;
+// use gst::glib::ControlFlow;
 
 pub struct PipelineResources {
     #[allow(dead_code)]
@@ -40,7 +40,7 @@ pub fn setup_pipeline(
         .unwrap();
     
     let stream_name_sample = stream_name.clone();
-    let stream_name_bus = stream_name.clone();
+    // let stream_name_bus = stream_name.clone();
     
     appsink.set_callbacks(
         gst_app::AppSinkCallbacks::builder()
@@ -81,11 +81,11 @@ pub fn setup_pipeline(
     println!("{}: Setting pipeline to Playing state", stream_name);
     pipeline.set_state(gst::State::Playing)?;
     
-    let bus = pipeline.bus().unwrap();
-    bus.add_watch(move |_, msg| {
-        println!("{}: Bus message: {:?}", stream_name_bus, msg.view());
-        ControlFlow::Continue
-    }).expect("Failed to add bus watch");
+    // let bus = pipeline.bus().unwrap();
+    // bus.add_watch(move |_, msg| {
+    //     println!("{}: Bus message: {:?}", stream_name_bus, msg.view());
+    //     ControlFlow::Continue
+    // }).expect("Failed to add bus watch");
     
     let main_loop = glib::MainLoop::new(None, false);
     

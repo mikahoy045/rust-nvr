@@ -17,11 +17,11 @@ mod web;
 pub type Clients = Arc<Mutex<HashMap<String, Vec<broadcast::Sender<Vec<u8>>>>>>;
 
 // Add this struct to hold pipeline resources
-struct PipelineResources {
-    #[allow(dead_code)]
-    pipeline: gst::Pipeline,
-    _main_loop: glib::MainLoop,
-}
+// struct PipelineResources {
+//     #[allow(dead_code)]
+//     pipeline: gst::Pipeline,
+//     _main_loop: glib::MainLoop,
+// }
 
 #[tokio::main]
 async fn main() -> Result<()> {

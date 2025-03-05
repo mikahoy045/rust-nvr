@@ -205,6 +205,10 @@ pub fn create_html_file(stream_names: &[String]) -> Result<()> {
                 background: rgba(0,0,0,0.9);
             }
             .toolbar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
                 background: #333;
                 padding: 5px 10px;
                 display: flex;
