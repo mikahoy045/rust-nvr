@@ -405,7 +405,7 @@ pub fn create_html_file(stream_names: &[String]) -> Result<()> {
                 
                 ws.onclose = function() {
                     console.log('Disconnected from ' + streamName);
-                    statusDot.style.backgroundColor = '#FF9800';
+                    statusDot.style.backgroundColor = 'red';
                     
                     ctx.fillStyle = 'black';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
