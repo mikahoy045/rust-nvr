@@ -116,7 +116,7 @@ pub fn create_html_file(stream_names: &[String]) -> Result<()> {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
                 padding: 8px;
-                height: calc(100vh - 60px);
+                height: calc(100vh - 100px);
             }
             .stream {
                 background: #2a2a2a;
