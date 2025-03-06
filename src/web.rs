@@ -302,12 +302,6 @@ pub fn create_html_file(stream_names: &[String]) -> Result<()> {
     html.push_str(r#"
     </div>
     <div class="toolbar">
-        <button class="toolbar-btn" id="fullscreen-btn">
-            <svg viewBox="0 0 24 24">
-                <path d="M5,5H10V7H7V10H5V5M14,5H19V10H17V7H14V5M17,14H19V19H14V17H17V14M10,17V19H5V14H7V17H10Z" />
-            </svg>
-            Full Screen
-        </button>
         <button class="toolbar-btn">
             <svg viewBox="0 0 24 24">
                 <path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
